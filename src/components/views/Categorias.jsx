@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import { supabase } from "../database/supabaseconfig";
 import ModalRegistroCategoria from "../components/categorias/ModalRegistroCategoria";
+import ModalEdicionCategoria from "../components/categorias/ModalEdicionCategoria";
+import ModalEliminacionCategoria from "../components/categorias/ModalEliminacionCategoria";
 import NotificacionOperacion from "../components/NotificacionOperacion";
 import TablaCategorias from "../components/categorias/TablaCategorias";
 import TarjetaCategoria from "../components/categorias/TarjetaCategoria";
@@ -13,7 +15,7 @@ const Categorias = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [toast, setToast] = useState({ mostrar: false, mensaje: "", tipo: "" });
 
-  // Variables para la estructura del formulario e inserciones
+  // Variables para la estructura del formulario de inserciones
   const [nuevaCategoria, setNuevaCategoria] = useState({
     nombre_categoria: "",
     descripcion_categoria: "",
@@ -28,30 +30,6 @@ const Categorias = () => {
     nombre_categoria: "",
     descripcion_categoria: "",
   });
-
-  // Métodos para el control de apertura de modales auxiliares
-  const abrirModalEdicion = (categoria) => {
-    setCategoriaEditar({
-      id_categoria: categoria.id_categoria,
-      nombre_categoria: categoria.nombre_categoria,
-      descripcion_categoria: categoria.descripcion_categoria,
-    });
-    setMostrarModalEdicion(true);
-  };
-
-  const abrirModalEliminacion = (categoria) => {
-    setCategoriaAEliminar(categoria);
-    setMostrarModalEliminacion(true);
-  };
-
-  // Manejador del cambio de valores en inputs
-  const manejoCambioInput = (e) => {
-    const { name, value } = e.target;
-    setNuevaCategoria((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
 
   // Método asíncrono para leer las categorías guardadas en Supabase
   const cargarCategorias = async () => {
@@ -122,7 +100,6 @@ const Categorias = () => {
         tipo: "exito",
       });
 
-      // Limpiar formulario, recargar registros en tiempo real y cerrar modal
       setNuevaCategoria({ nombre_categoria: "", descripcion_categoria: "" });
       await cargarCategorias();
       setMostrarModal(false);
@@ -134,6 +111,128 @@ const Categorias = () => {
         tipo: "error",
       });
     }
+  };
+
+  // Manejador del cambio de valores en inputs (Edición - ¡YA ESTÁ EN SU LUGAR CORRECTO FUERA!)
+  const manejoCambioInputEdicion = (e) => {
+    const { name, value } = e.target;
+    setCategoriaEditar((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Función para Actualizar en Supabase (S32)
+  const actualizarCategoria = async () => {
+    try {
+      if (
+        !categoriaEditar.nombre_categoria.trim() ||
+        !categoriaEditar.descripcion_categoria.trim()
+      ) {
+        setToast({
+          mostrar: true,
+          mensaje: "Debe llenar todos los campos.",
+          tipo: "advertencia",
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from("categorias")
+        .update({
+          nombre_categoria: categoriaEditar.nombre_categoria,
+          descripcion_categoria: categoriaEditar.descripcion_categoria,
+        })
+        .eq("id_categoria", categoriaEditar.id_categoria);
+
+      if (error) {
+        console.error("Error al actualizar categoría:", error.message);
+        setToast({
+          mostrar: true,
+          mensaje: "Error al actualizar la categoría.",
+          tipo: "error",
+        });
+        return;
+      }
+
+      setToast({
+        mostrar: true,
+        mensaje: `Categoría "${categoriaEditar.nombre_categoria}" actualizada exitosamente.`,
+        tipo: "exito",
+      });
+
+      await cargarCategorias();
+      setMostrarModalEdicion(false);
+    } catch (err) {
+      console.error("Excepción al actualizar categoría:", err.message);
+      setToast({
+        mostrar: true,
+        mensaje: "Error inesperado al actualizar la categoría.",
+        tipo: "error",
+      });
+    }
+  };
+
+  // Función para Eliminar en Supabase (S34)
+  const eliminarCategoria = async () => {
+    try {
+      const { error } = await supabase
+        .from("categorias")
+        .delete()
+        .eq("id_categoria", categoriaAEliminar.id_categoria);
+
+      if (error) {
+        console.error("Error al eliminar categoría:", error.message);
+        setToast({
+          mostrar: true,
+          mensaje: "Error al eliminar la categoría.",
+          tipo: "error",
+        });
+        return;
+      }
+
+      setToast({
+        mostrar: true,
+        mensaje: `Categoría "${categoriaAEliminar.nombre_categoria}" eliminada correctamente.`,
+        tipo: "exito",
+      });
+
+      await cargarCategorias();
+      setMostrarModalEliminacion(false);
+      setCategoriaAEliminar(null);
+    } catch (err) {
+      console.error("Excepción al eliminar categoría:", err.message);
+      setToast({
+        mostrar: true,
+        mensaje: "Error inesperado al eliminar la categoría.",
+        tipo: "error",
+      });
+    }
+  };
+
+  // Método para abrir el modal de edición acoplando los datos
+  const abrirModalEdicion = (categoria) => {
+    setCategoriaEditar({
+      id_categoria: categoria.id_categoria,
+      nombre_categoria: categoria.nombre_categoria,
+      descripcion_categoria: categoria.descripcion_categoria,
+    });
+    setMostrarModalEdicion(true);
+  };
+
+  // Método para abrir el modal de eliminación guardando la referencia
+  const abrirModalEliminacion = (categoria) => {
+    setCategoriaAEliminar(categoria);
+    setMostrarModalEliminacion(true);
+  };
+
+  // Manejador del cambio de valores en inputs (Registro)
+  const manejoCambioInput = (e) => {
+    const { name, value } = e.target;
+    setNuevaCategoria((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   // Ejecución automática al montar la vista
@@ -170,10 +269,9 @@ const Categorias = () => {
         </Row>
       )}
 
-      {/* Bloques condicionales adaptativos para renderizar la UI responsiva */}
+      {/* Bloques condicionales adaptativos */}
       {!cargando && categorias.length > 0 && (
         <Row>
-          {/* Se muestra únicamente en pantallas de escritorio grandes (Grandes e idénticas a lg) */}
           <Col lg={12} className="d-none d-lg-block">
             <TablaCategorias
               categorias={categorias}
@@ -181,8 +279,6 @@ const Categorias = () => {
               abrirModalEliminacion={abrirModalEliminacion}
             />
           </Col>
-
-          {/* Se muestra únicamente en pantallas móviles pequeñas (Menores que lg) */}
           <Col xs={12} sm={12} md={12} className="d-lg-none">
             <TarjetaCategoria
               categorias={categorias}
@@ -200,6 +296,21 @@ const Categorias = () => {
         nuevaCategoria={nuevaCategoria}
         manejoCambioInput={manejoCambioInput}
         agregarCategoria={agregarCategoria}
+      />
+
+      <ModalEdicionCategoria
+        mostrarModal={mostrarModalEdicion}
+        setMostrarModal={setMostrarModalEdicion}
+        categoriaEditar={categoriaEditar}
+        manejoCambioInput={manejoCambioInputEdicion}
+        actualizarCategoria={actualizarCategoria}
+      />
+
+      <ModalEliminacionCategoria
+        mostrarModal={mostrarModalEliminacion}
+        setMostrarModal={setMostrarModalEliminacion}
+        categoriaAEliminar={categoriaAEliminar}
+        eliminarCategoria={eliminarCategoria}
       />
 
       <NotificacionOperacion
