@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Form, Button } from "react-bootstrap";
+import React, { useState } from "react";
+import { Modal, Button } from "react-bootstrap";
 
-const ModalEdicionCategoria = ({
+const ModalEliminacionCategoria = ({
   mostrarModal,
   setMostrarModal,
-  categoriaEditar,
-  manejoCambioInput,
-  actualizarCategoria,
+  categoriaAEliminar,
+  eliminarCategoria,
 }) => {
   const [deshabilitado, setDeshabilitado] = useState(false);
 
-  const handleActualizar = async () => {
+  const handleEliminar = async () => {
     if (deshabilitado) return;
     setDeshabilitado(true);
-    await actualizarCategoria();
+    await eliminarCategoria();
     setDeshabilitado(false);
   };
 
@@ -26,47 +25,27 @@ const ModalEdicionCategoria = ({
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title>Modificar Categoría</Modal.Title>
+        <Modal.Title>Eliminar Categoría</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
-          <Form.Group className="mb-3">
-            <Form.Label>Nombre</Form.Label>
-            <Form.Control
-              type="text"
-              name="nombre_categoria"
-              value={categoriaEditar.nombre_categoria}
-              onChange={manejoCambioInput}
-              placeholder="Ingresa el nombre"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Descripción</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              name="descripcion_categoria"
-              value={categoriaEditar.descripcion_categoria}
-              onChange={manejoCambioInput}
-              placeholder="Ingresa la descripción"
-            />
-          </Form.Group>
-        </Form>
+        <p>
+          ¿Está seguro de que desea eliminar la categoría{" "}
+          <strong>{categoriaAEliminar?.nombre_categoria}</strong>?
+        </p>
+        <p className="text-danger small">
+          * Esta acción no se puede deshacer y podría afectar a los productos asociados.
+        </p>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={() => setMostrarModal(false)}>
           Cancelar
         </Button>
-        <Button
-          variant="primary"
-          onClick={handleActualizar}
-          disabled={categoriaEditar.nombre_categoria.trim() === "" || deshabilitado}
-        >
-          Guardar Cambios
+        <Button variant="danger" onClick={handleEliminar} disabled={deshabilitado}>
+          Eliminar Registro
         </Button>
       </Modal.Footer>
     </Modal>
   );
 };
 
-export default ModalEdicionCategoria;
+export default ModalEliminacionCategoria;

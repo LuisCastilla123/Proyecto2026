@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import { supabase } from "../database/supabaseconfig";
-import ModalRegistroCategoria from "../components/categorias/ModalRegistroCategoria";
-import ModalEdicionCategoria from "../components/categorias/ModalEdicionCategoria";
-import ModalEliminacionCategoria from "../components/categorias/ModalEliminacionCategoria";
+import ModalRegistroCategoria from "src/components/Categorias/ModalRegistroCategoria.jsx";
+import ModalEdicionCategoria from "/src/components/Categorias/ModalEdicionCategoria.jsx";
+import ModalEliminacionCategoria from "/src/components/categorias/ModalEliminacionCategoria.jsx";
 import NotificacionOperacion from "../components/NotificacionOperacion";
 import TablaCategorias from "../components/categorias/TablaCategorias";
 import TarjetaCategoria from "../components/categorias/TarjetaCategoria";
@@ -31,7 +31,11 @@ const Categorias = () => {
     descripcion_categoria: "",
   });
 
-  // Método asíncrono para leer las categorías guardadas en Supabase
+  // ==========================================
+  // METODOS ASINCRONOS / PETICIONES A SUPABASE
+  // ==========================================
+
+  // Método asíncrono para leer las categorías guardadas en Supabase (S30)
   const cargarCategorias = async () => {
     try {
       setCargando(true);
@@ -62,7 +66,7 @@ const Categorias = () => {
     }
   };
 
-  // Método asíncrono declarativo para insertar datos en Supabase
+  // Método asíncrono declarativo para insertar datos en Supabase (S28)
   const agregarCategoria = async () => {
     try {
       if (
@@ -111,15 +115,6 @@ const Categorias = () => {
         tipo: "error",
       });
     }
-  };
-
-  // Manejador del cambio de valores en inputs (Edición - ¡YA ESTÁ EN SU LUGAR CORRECTO FUERA!)
-  const manejoCambioInputEdicion = (e) => {
-    const { name, value } = e.target;
-    setCategoriaEditar((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
   };
 
   // Función para Actualizar en Supabase (S32)
@@ -210,7 +205,11 @@ const Categorias = () => {
     }
   };
 
-  // Método para abrir el modal de edición acoplando los datos
+  // ==========================================
+  // MANEJADORES DE ESTADO INTERNOS (MODALES/INPUTS)
+  // ==========================================
+
+  // Método para abrir el modal de edición acoplando los datos correspondientes
   const abrirModalEdicion = (categoria) => {
     setCategoriaEditar({
       id_categoria: categoria.id_categoria,
@@ -235,11 +234,23 @@ const Categorias = () => {
     }));
   };
 
-  // Ejecución automática al montar la vista
+  // Manejador del cambio de valores en inputs (Edición)
+  const manejoCambioInputEdicion = (e) => {
+    const { name, value } = e.target;
+    setCategoriaEditar((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Ejecución automática al montar la vista inicial (S30)
   useEffect(() => {
     cargarCategorias();
   }, []);
 
+  // ==========================================
+  // RENDERIZADO DE INTERFAZ DE USUARIO (JSX)
+  // ==========================================
   return (
     <Container className="mt-3">
       {/* Título y botón Nueva Categoría */}
@@ -269,9 +280,10 @@ const Categorias = () => {
         </Row>
       )}
 
-      {/* Bloques condicionales adaptativos */}
+      {/* Bloques condicionales adaptativos (Diseño Responsivo S30 y S31) */}
       {!cargando && categorias.length > 0 && (
         <Row>
+          {/* Vista Escritorio: Tabla Estilizada */}
           <Col lg={12} className="d-none d-lg-block">
             <TablaCategorias
               categorias={categorias}
@@ -279,6 +291,7 @@ const Categorias = () => {
               abrirModalEliminacion={abrirModalEliminacion}
             />
           </Col>
+          {/* Vista Móvil: Tarjetas Interactivas */}
           <Col xs={12} sm={12} md={12} className="d-lg-none">
             <TarjetaCategoria
               categorias={categorias}

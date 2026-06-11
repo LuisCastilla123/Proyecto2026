@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
 
 const ModalEdicionCategoria = ({
@@ -69,4 +69,4 @@ const ModalEdicionCategoria = ({
   );
 };
 
-export default ModalEdicionCategoria;
+export default ModalEdicionCategoria; 
