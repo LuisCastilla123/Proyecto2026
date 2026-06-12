@@ -1,51 +1,50 @@
 import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 
-const ModalEliminacionCategoria = ({
-  mostrarModal,
-  setMostrarModal,
-  categoriaAEliminar,
-  eliminarCategoria,
+const ModalEliminacionProducto = ({
+    mostrarModalEliminacion,
+    setMostrarModalEliminacion,
+    eliminarProducto,
+    producto
 }) => {
-  const [deshabilitado, setDeshabilitado] = useState(false);
 
-  const handleEliminar = async () => {
-    if (deshabilitado) return;
-    setDeshabilitado(true);
-    await eliminarCategoria();
-    setDeshabilitado(false);
-  };
+    const [deshabilitado, setDeshabilitado] = useState(false);
 
-  return (
-    <Modal
-      show={mostrarModal}
-      onHide={() => setMostrarModal(false)}
-      backdrop="static"
-      keyboard={false}
-      centered
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Eliminar Categoría</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <p>
-          ¿Está seguro de que desea eliminar la categoría{" "}
-          <strong>{categoriaAEliminar?.nombre_categoria}</strong>?
-        </p>
-        <p className="text-danger small">
-          * Esta acción no se puede deshacer y podría afectar a los productos asociados.
-        </p>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setMostrarModal(false)}>
-          Cancelar
-        </Button>
-        <Button variant="danger" onClick={handleEliminar} disabled={deshabilitado}>
-          Eliminar Registro
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
+    const handleEliminar = async () => {
+        if (deshabilitado) return;
+        setDeshabilitado(true);
+        await eliminarProducto();
+        setDeshabilitado(false);
+    };
+
+    return (
+        <Modal
+            show={mostrarModalEliminacion}
+            onHide={() => setMostrarModalEliminacion(false)}
+            backdrop="static"
+            keyboard={false}
+            centered
+        >
+            <Modal.Header closeButton>
+                <Modal.Title>Confirmar Eliminación</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                ¿Estás seguro de que deseas eliminar el producto "<strong>{producto?.nombre_producto}</strong>"?
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={() => setMostrarModalEliminacion(false)}>
+                    Cancelar
+                </Button>
+                <Button
+                    variant="danger"
+                    onClick={handleEliminar}
+                    disabled={deshabilitado}
+                >
+                    Eliminar
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
 };
 
-export default ModalEliminacionCategoria;
+export default ModalEliminacionProducto;

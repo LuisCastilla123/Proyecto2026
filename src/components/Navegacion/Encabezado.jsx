@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Container, Nav, Navbar, Offcanvas } from "react-bootstrap";
-import logo from "../../assets/logo.png"; // Asegúrate de tener la extensión correcta (.png o .svg)
+import logo from "/src/assets/logo.png"; 
 import { supabase } from "../../database/supabaseconfig";
 
 const Encabezado = () => {
   const [mostrarMenu, setMostrarMenu] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation(); // Para detectar la ruta actual
+  const location = useLocation(); 
 
   const manejarToggle = () => setMostrarMenu(!mostrarMenu);
 
@@ -29,11 +29,11 @@ const Encabezado = () => {
     }
   };
 
-  // Detectar rutas especiales para cambiar la visualización del menú
+  
   const esLogin = location.pathname === "/login";
   const esCatalogo = location.pathname === "/catalogo" && localStorage.getItem("usuario-supabase") === null;
 
-  // Lógica de renderizado dinámico del menú según el contexto de navegación
+
   let contenidoMenu;
 
   if (esLogin) {
@@ -123,7 +123,7 @@ const Encabezado = () => {
           className="text-white fw-bold d-flex align-items-center"
           style={{ cursor: "pointer" }}
         >
-          <img 
+         // <img 
             alt="Logo"
             src={logo}
             width="45"

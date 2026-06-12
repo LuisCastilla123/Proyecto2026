@@ -9,9 +9,10 @@ const FormularioLogin = ({ usuario, contrasena, error, setUsuario, setContrasena
         
         {error && <Alert variant="danger">{error}</Alert>}
         
-        <Form>
+        <Form onSubmit={(e) => e.preventDefault()}>
           <Form.Group className="mb-3" controlId="usuario">
-            <Form.Group>Usuario</Form.Group>
+            {/* 💡 Cambiado a Form.Label de forma correcta */}
+            <Form.Label>Usuario</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ingresa tu usuario"
@@ -22,7 +23,8 @@ const FormularioLogin = ({ usuario, contrasena, error, setUsuario, setContrasena
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="contrasena">
-            <Form.Group>Contraseña</Form.Group>
+            {/* 💡 Cambiado a Form.Label de forma correcta */}
+            <Form.Label>Contraseña</Form.Label>
             <Form.Control
               type="password"
               placeholder="Ingresa tu contraseña"
@@ -32,7 +34,12 @@ const FormularioLogin = ({ usuario, contrasena, error, setUsuario, setContrasena
             />
           </Form.Group>
 
-          <Button variant="primary" className="w-100" onClick={iniciarSesion}>
+          <Button 
+            variant="primary" 
+            className="w-100" 
+            type="button" 
+            onClick={iniciarSesion}
+          >
             Iniciar Sesión
           </Button>
         </Form>

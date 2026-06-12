@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import { supabase } from "../database/supabaseconfig";
-import ModalRegistroCategoria from "src/components/Categorias/ModalRegistroCategoria.jsx";
-import ModalEdicionCategoria from "/src/components/Categorias/ModalEdicionCategoria.jsx";
-import ModalEliminacionCategoria from "/src/components/categorias/ModalEliminacionCategoria.jsx";
+import ModalRegistroCategoria from "../components/categorias/ModalRegistroCategoria";
+import ModalEdicionCategoria from "../components/categorias/ModalEdicionCategoria.jsx";
+import ModalEliminacionCategoria from "../components/categorias/ModalEliminacionCategoria.jsx";
 import NotificacionOperacion from "../components/NotificacionOperacion";
 import TablaCategorias from "../components/categorias/TablaCategorias";
 import TarjetaCategoria from "../components/categorias/TarjetaCategoria";
